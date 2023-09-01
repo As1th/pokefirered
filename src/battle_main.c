@@ -42,6 +42,7 @@
 #include "constants/pokemon.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
+#include "constants/flags.h"
 
 static void SpriteCB_UnusedDebugSprite(struct Sprite *sprite);
 static void HandleAction_UseMove(void);
@@ -3007,9 +3008,12 @@ u8 IsRunningFromBattleImpossible(void)
         holdEffect = ItemId_GetHoldEffect(gBattleMons[gActiveBattler].item);
     gPotentialItemEffectBattler = gActiveBattler;
     if (holdEffect == HOLD_EFFECT_CAN_ALWAYS_RUN
-     || (gBattleTypeFlags & BATTLE_TYPE_LINK)
+     || (FlagGet(40))
      || gBattleMons[gActiveBattler].ability == ABILITY_RUN_AWAY)
         return BATTLE_RUN_SUCCESS;
+    else if(!FlagGet(40)){
+        return BATTLE_RUN_FORBIDDEN;
+    }
     side = GetBattlerSide(gActiveBattler);
     for (i = 0; i < gBattlersCount; i++)
     {
@@ -3041,7 +3045,7 @@ u8 IsRunningFromBattleImpossible(void)
         return BATTLE_RUN_FAILURE;
     }
     if ((gBattleMons[gActiveBattler].status2 & (STATUS2_ESCAPE_PREVENTION | STATUS2_WRAPPED))
-     || (gStatuses3[gActiveBattler] & STATUS3_ROOTED))
+     )
     {
         gBattleCommunication[MULTISTRING_CHOOSER] = 0;
         return BATTLE_RUN_FORBIDDEN;
@@ -3232,7 +3236,7 @@ static void HandleTurnActionSelectionState(void)
                     MarkBattlerForControllerExec(gActiveBattler);
                     return;
                 }
-                if (gBattleTypeFlags & BATTLE_TYPE_TRAINER
+                if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE
                  && !(gBattleTypeFlags & BATTLE_TYPE_LINK)
                  && gBattleBufferB[gActiveBattler][1] == B_ACTION_RUN)
                 {
@@ -3242,7 +3246,7 @@ static void HandleTurnActionSelectionState(void)
                 else if (IsRunningFromBattleImpossible() != BATTLE_RUN_SUCCESS
                       && gBattleBufferB[gActiveBattler][1] == B_ACTION_RUN)
                 {
-                    gSelectionBattleScripts[gActiveBattler] = BattleScript_PrintCantEscapeFromBattle;
+                    gSelectionBattleScripts[gActiveBattler] = BattleScript_PrintCantRunFromTrainer;
                     gBattleCommunication[gActiveBattler] = STATE_SELECTION_SCRIPT;
                     *(gBattleStruct->selectionScriptFinished + gActiveBattler) = FALSE;
                     *(gBattleStruct->stateIdAfterSelScript + gActiveBattler) = STATE_BEFORE_ACTION_CHOSEN;
@@ -4264,6 +4268,10 @@ bool8 TryRunFromBattle(u8 battler)
             {
                 effect++;
             }
+        } 
+        else // same speed or faster
+        {
+            effect++;
         }
 
         ++gBattleStruct->runTries;
