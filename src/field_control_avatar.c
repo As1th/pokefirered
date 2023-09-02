@@ -30,7 +30,7 @@
 #include "constants/event_objects.h"
 #include "constants/maps.h"
 #include "constants/metatile_behaviors.h"
-
+#include "constants/trainer_types.h"
 #define SIGNPOST_POKECENTER 0
 #define SIGNPOST_POKEMART 1
 #define SIGNPOST_INDIGO_1 2
@@ -446,7 +446,7 @@ static const u8 *GetInteractedObjectEventScript(struct MapPosition *position, u8
             return NULL;
     }
 
-    if (InUnionRoom() == TRUE && !ObjectEventCheckHeldMovementStatus(&gObjectEvents[objectEventId]))
+    if (InUnionRoom() == FALSE && (gObjectEvents[objectEventId].trainerType == TRAINER_TYPE_NORMAL || gObjectEvents[objectEventId].trainerType == TRAINER_TYPE_BURIED))
         return NULL;
 
     gSelectedObjectEvent = objectEventId;
