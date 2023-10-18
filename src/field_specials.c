@@ -392,7 +392,7 @@ u8 GetRandomSlotMachineId(void)
 
 bool8 LeadMonHasEffortRibbon(void)
 {
-    u8 leadMonIdx = GetLeadMonIndex();
+    u8 leadMonIdx = VarGet(gSpecialVar_0x8004);
     return GetMonData(&gPlayerParty[leadMonIdx], MON_DATA_EFFORT_RIBBON, NULL);
 }
 
@@ -400,21 +400,19 @@ void GiveLeadMonEffortRibbon(void)
 {
     u8 leadMonIdx;
     bool8 param;
-    IncrementGameStat(GAME_STAT_RECEIVED_RIBBONS);
-    FlagSet(FLAG_SYS_RIBBON_GET);
+    leadMonIdx = VarGet(gSpecialVar_0x8004);
+    if(VarGet(gSpecialVar_0x8003)==0)
+    {
+param = FALSE;
+SetMonData(&gPlayerParty[leadMonIdx], MON_DATA_EFFORT_RIBBON, &param);
+    } else {
     param = TRUE;
-    leadMonIdx = GetLeadMonIndex();
+    
     SetMonData(&gPlayerParty[leadMonIdx], MON_DATA_EFFORT_RIBBON, &param);
+    }
 }
 
-bool8 AreLeadMonEVsMaxedOut(void)
-{
-    u8 leadMonIndex = GetLeadMonIndex();
-    if (GetMonEVCount(&gPlayerParty[leadMonIndex]) >= 510)
-        return TRUE;
-    else
-        return FALSE;
-}
+
 
 bool8 IsStarterFirstStageInParty(void)
 {

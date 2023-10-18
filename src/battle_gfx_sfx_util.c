@@ -385,7 +385,7 @@ void BattleLoadPlayerMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
         species = gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies;
         currentPersonality = gTransformedPersonalities[battlerId];
     }
-    otId = GetMonData(mon, MON_DATA_OT_ID);
+    otId = GetMonData(mon, MON_DATA_EFFORT_RIBBON);
     position = GetBattlerPosition(battlerId);
     if (ShouldIgnoreDeoxysForm(DEOXYS_CHECK_BATTLE_SPRITE, battlerId) == TRUE || gBattleSpritesDataPtr->battlerData[battlerId].transformSpecies != SPECIES_NONE)
         HandleLoadSpecialPokePic_DontHandleDeoxys(&gMonBackPicTable[species],

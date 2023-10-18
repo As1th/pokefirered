@@ -2983,9 +2983,10 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
 
         if (CalculateBoxMonChecksum(boxMon) != boxMon->checksum)
         {
-            boxMon->isBadEgg = TRUE;
-            boxMon->isEgg = TRUE;
-            substruct3->isEgg = TRUE;
+             boxMon->isEgg = TRUE;
+            boxMon->isBadEgg = FALSE;
+            boxMon->isEgg = FALSE;
+            
         }
     }
 
@@ -3411,9 +3412,12 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
 
         if (CalculateBoxMonChecksum(boxMon) != boxMon->checksum)
         {
-            boxMon->isBadEgg = TRUE;
-            boxMon->isEgg = TRUE;
-            substruct3->isEgg = TRUE;
+             boxMon->isEgg = TRUE;
+             
+            boxMon->isEgg = FALSE;
+          boxMon->isEgg = TRUE;
+           boxMon->isEgg = FALSE;
+            boxMon->isBadEgg = FALSE;
             EncryptBoxMon(boxMon);
             return;
         }
@@ -5884,7 +5888,7 @@ void PlayMapChosenOrBattleBGM(u16 songId)
 const u32 *GetMonFrontSpritePal(struct Pokemon *mon)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
-    u32 otId = GetMonData(mon, MON_DATA_OT_ID, NULL);
+    u32 otId = GetMonData(mon, MON_DATA_EFFORT_RIBBON, NULL);
     u32 personality = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
     return GetMonSpritePalFromSpeciesAndPersonality(species, otId, personality);
 }
@@ -5894,10 +5898,13 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
     u32 shinyValue;
 
     if (species > SPECIES_EGG)
+    {
+        otId = 0;
         return gMonPaletteTable[0].data;
-
-    shinyValue = GET_SHINY_VALUE(otId, personality);
-    if (shinyValue < SHINY_ODDS)
+    }
+       
+    
+    if (otId == 1)
         return gMonShinyPaletteTable[species].data;
     else
         return gMonPaletteTable[species].data;
@@ -5906,17 +5913,31 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
 const struct CompressedSpritePalette *GetMonSpritePalStruct(struct Pokemon *mon)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG, NULL);
-    u32 otId = GetMonData(mon, MON_DATA_OT_ID, NULL);
+    u32 otId = GetMonData(mon, MON_DATA_EFFORT_RIBBON, NULL);
     u32 personality = GetMonData(mon, MON_DATA_PERSONALITY, NULL);
     return GetMonSpritePalStructFromOtIdPersonality(species, otId, personality);
 }
 
 const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u16 species, u32 otId , u32 personality)
 {
-    u32 shinyValue;
+     u32 shinyValue;
 
-    shinyValue = GET_SHINY_VALUE(otId, personality);
-    if (shinyValue < SHINY_ODDS)
+    if (species == SPECIES_EGG)
+    {
+        
+      if(otId > 7)
+      {
+         if(otId == 8)
+      {
+        otId++;
+       
+      }
+       otId++;
+      }
+    }
+       
+    
+    if (otId == 1)
         return &gMonShinyPaletteTable[species];
     else
         return &gMonPaletteTable[species];

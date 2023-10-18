@@ -364,10 +364,10 @@ void PlayCry_Script(u16 species, u8 mode)
 {
     if (!QL_IS_PLAYBACK_STATE) // This check is exclusive to FR/LG
     {
-        m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 85);
+        m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 100);
         PlayCryInternal(species, 0, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
     }
-    gPokemonCryBGMDuckingCounter = 2;
+    gPokemonCryBGMDuckingCounter = 0;
     RestoreBGMVolumeAfterPokemonCry();
 }
 

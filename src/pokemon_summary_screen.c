@@ -4015,7 +4015,7 @@ static void PokeSum_CreateMonPicSprite(void)
 
     species = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPECIES_OR_EGG);
     personality = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_PERSONALITY);
-    trainerId = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_OT_ID);
+    trainerId = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EFFORT_RIBBON);
 
     if (sMonSummaryScreen->savedCallback == CB2_ReturnToTradeMenuFromSummary)
     {
@@ -5076,7 +5076,7 @@ static void Task_PokeSum_SwitchDisplayedPokemon(u8 taskId)
     case 3:
         FillBgTilemapBufferRect_Palette0(0, 0, 0, 0, 30, 20);
 
-        if (IsMonShiny(&sMonSummaryScreen->currentMon) == TRUE && !sMonSummaryScreen->isEgg)
+        if (GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_EFFORT_RIBBON) == TRUE && !sMonSummaryScreen->isEgg)
         {
             LoadPalette(&gSummaryScreen_Bg_Pal[16 * 6], BG_PLTT_ID(0), PLTT_SIZE_4BPP);
             LoadPalette(&gSummaryScreen_Bg_Pal[16 * 5], BG_PLTT_ID(1), PLTT_SIZE_4BPP);
