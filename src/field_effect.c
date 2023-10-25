@@ -28,7 +28,7 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
-
+extern struct CompressedSpritePalette gMonShinyPaletteTable[];
 extern struct CompressedSpritePalette gMonPaletteTable[]; // Intentionally declared (incorrectly) without const in order to match
 extern const struct CompressedSpritePalette gTrainerFrontPicPaletteTable[];
 extern const struct CompressedSpriteSheet gTrainerFrontPicTable[];
@@ -599,19 +599,20 @@ static void LoadTrainerGfx_TrainerCard(u8 gender, u16 palOffset, u8 *dest)
 }
 
 // Unused
-static u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
-{
-    LoadSpritePalette(&sNewGameOakObjectPaletteInfo);
-    return CreateSprite(&sNewGameOakObjectTemplate, x, y, subpriority);
-}
+
 
 u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
-{
-    u16 spriteId = CreateMonPicSprite_HandleDeoxys(species, 0, 0x8000, TRUE, x, y, 0, gMonPaletteTable[species].tag);
-    PreservePaletteInWeather(IndexOfSpritePaletteTag(gMonPaletteTable[species].tag) + 0x10);
-    if (spriteId == 0xFFFF)
-        return MAX_SPRITES;
-    else
+{u16 spriteId;
+    if(VarGet(gSpecialVar_0x8003) == 1)
+    {
+     spriteId = CreateMonPicSprite_HandleDeoxys(species, 1, 0x8000, TRUE, x, y, 0, gMonShinyPaletteTable[species].tag);
+    
+    } else{
+          spriteId = CreateMonPicSprite_HandleDeoxys(species, 0, 0x8000, TRUE, x, y, 0, gMonPaletteTable[species].tag);
+          PreservePaletteInWeather(IndexOfSpritePaletteTag(gMonPaletteTable[species].tag) + 0x10);
+    }
+    
+   
         return spriteId;
 }
 
